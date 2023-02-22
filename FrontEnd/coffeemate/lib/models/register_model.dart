@@ -15,16 +15,6 @@ class Register extends Equatable {
     this.phoneNumber = '',
   });
 
-  factory Register.fromJson(Map<String, dynamic> json) {
-    return Register(
-      email: json['email'],
-      username: json['username'],
-      password: json['password'],
-      password2: json['password2'],
-      phoneNumber: json['phoneNumber'],
-    );
-  }
-
   @override
   List<Object?> get props =>
       [email, password, password2, username, phoneNumber];
@@ -43,5 +33,15 @@ class Register extends Equatable {
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+      'password2': password2,
+      'username': username,
+      'phone_number': phoneNumber,
+    };
   }
 }

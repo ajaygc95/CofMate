@@ -34,13 +34,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   void onSubmitRegister(
       RegisterEvent event, Emitter<RegisterState> emit) async {
-    print("+++++++++++++++ Inside Bloc +++++++++");
     try {
+      final registerJson = jsonEncode(register); // encode register as JSON
       final response = await http.post(Uri.parse(registerApi),
-          headers: {'Content-Type': 'application/json'}, body: register);
+          headers: {'Content-Type': 'application/json'}, body: registerJson);
       print("++++++++++++++++++++ THIS IS ${response.body}");
     } catch (error) {
-      throw Exception('Register Failed!');
+      throw Exception(error);
     }
   }
 }
