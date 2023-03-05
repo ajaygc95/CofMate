@@ -29,7 +29,7 @@ class UsersScreen extends StatelessWidget {
               ],
             );
           }
-          return Text("Somehing went Wrong");
+          return Text("Something Went Wrong");
         },
       ),
     );

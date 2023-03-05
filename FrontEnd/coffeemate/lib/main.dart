@@ -1,4 +1,5 @@
 import 'package:coffeemate/bloc/login/login_bloc.dart';
+import 'package:coffeemate/bloc/profile/profile_bloc.dart';
 import 'package:coffeemate/bloc/register/register_bloc.dart';
 import 'package:coffeemate/config/app_router.dart';
 import 'package:coffeemate/config/custom_theme.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => LoginBloc()),
         BlocProvider(create: (_) => RegisterBloc()),
+        BlocProvider(create: (_) => ProfileBloc()),
       ],
       child: MaterialApp(
         theme: theme(),

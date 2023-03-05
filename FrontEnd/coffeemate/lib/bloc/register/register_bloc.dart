@@ -39,8 +39,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       final response = await http.post(Uri.parse(registerApi),
           headers: {'Content-Type': 'application/json'}, body: registerJson);
       print("++++++++++++++++++++ THIS IS ${response.body}");
+      if (response.statusCode == 200) {
+      } else {
+        print("======== Error Message =============");
+        print(response.body);
+        emit(RegisterError(
+            errorMessage: "Registration failed: ${response.body}"));
+      }
+      emit(CompleteRegisterState());
     } catch (error) {
-      throw Exception(error);
+      emit(RegisterError(errorMessage: "Registration failed: $error"));
     }
   }
 }

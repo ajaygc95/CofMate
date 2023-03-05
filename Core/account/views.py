@@ -11,6 +11,8 @@ from rest_framework.authentication import TokenAuthentication
 from .serializers import (RegisterSerializer, ProfileSerializer, LoginSerializer, UserSerializer,ImageUploadSerializer, ImageSerializer)
 from django.contrib.auth.models import User
 from .models import  Profile, Image, Interest
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from rest_framework.exceptions import NotFound
 
 def hello(request):
     return HttpResponse("Hello World")
@@ -52,13 +54,20 @@ class ImageUploadView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class ProfileViewSet(viewsets.ModelViewSet):
-    print("I am here")
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        user_id = self.kwargs.get('pk')  # retrieve the user ID from the URL
+        try:
+            profile = self.queryset.get(user=user_id)  # retrieve the profile for the user
+        except ObjectDoesNotExist:
+            raise NotFound("You don't have a profile created yet")  # raise a custom error if no profile exists
+        if user_id == str(self.request.user.id):  # only allow the owner of the profile to access it
+            return self.queryset.filter(user=user_id)
+        else:
+            raise PermissionDenied('You do not have permission to view this profile')
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:equatable/equatable.dart';
-
 abstract class ProfileEvent {}
 
 class UpdateProfileEvent extends ProfileEvent {
@@ -21,3 +19,5 @@ class AddInterestsEvent extends ProfileEvent {
 
   AddInterestsEvent({required this.interest});
 }
+
+class SubmitProfileEvent extends ProfileEvent {}

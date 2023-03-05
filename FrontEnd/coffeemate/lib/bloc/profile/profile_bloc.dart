@@ -1,34 +1,39 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:coffeemate/bloc/profile/profile_event.dart';
 import 'package:coffeemate/bloc/profile/profile_state.dart';
-import 'package:coffeemate/models/test_profile.dart';
+import 'package:coffeemate/constants/api.dart';
+import 'package:coffeemate/models/Profile.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Profile profile = Profile();
   ProfileBloc() : super(InitialProfileState()) {
-    on<UpdateProfileEvent>(onNumberIncrease);
+    on<UpdateProfileEvent>(onProfileCreate);
     on<AddImageEvent>(onAddImage);
     on<AddInterestsEvent>(onAddInterests);
+    on<SubmitProfileEvent>(onSubmitProfile);
   }
 
-  void onNumberIncrease(ProfileEvent event, Emitter<ProfileState> emit) async {
+  void onProfileCreate(ProfileEvent event, Emitter<ProfileState> emit) async {
     if (event is UpdateProfileEvent) {
       if (event.label == "name") {
         print("${event.value}");
         profile = profile.copyWith(name: event.value);
-      } else if (event.label == "age") {
-        profile = profile.copyWith(age: int.parse(event.value));
-      } else if (event.label == "first_name") {
+      } else if (event.label == "dob") {
+        profile =
+            profile.copyWith(dob: DateFormat('MM/dd/yyyy').parse(event.value!));
+      } else if (event.label == "firstName") {
         profile = profile.copyWith(firstName: event.value);
-      } else if (event.label == "last_name") {
+      } else if (event.label == "lastName") {
         profile = profile.copyWith(lastName: event.value);
       } else if (event.label == "bio") {
         profile = profile.copyWith(bio: event.value);
       } else if (event.label == "jobTitle") {
         profile = profile.copyWith(jobTitle: event.value);
-      } else if (event.label == "email") {
-        profile = profile.copyWith(email: event.value);
       }
     }
 
@@ -60,7 +65,42 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         profile = profile.copyWith(interests: [...profile.interests, interest]);
       }
-      emit(UpdateProfileState(profile: profile));
     }
+    emit(UpdateProfileState(profile: profile));
+  }
+
+  void onSubmitProfile(ProfileEvent event, Emitter<ProfileState> emit) async {
+    print("Uploading profile");
+    if (event is SubmitProfileEvent) {
+      emit(UpdateProfileLoading());
+    }
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? authToken = prefs.getString('token');
+      print("Auth Token: ${authToken}");
+
+      final profileJson = jsonEncode(profile);
+      print("================== ProfileJson =========");
+      print(profileJson);
+      final response = await http.post(
+        Uri.parse(profileApi),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: profileJson,
+      );
+      if (response.statusCode == 2000 || response.statusCode == 201) {
+        print("============= Response from Proifle api ============");
+        print("${response.body}");
+      } else {
+        print("${response.body}");
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    emit(ProfileUploaded());
   }
 }

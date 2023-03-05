@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:coffeemate/models/test_profile.dart';
+import 'package:coffeemate/models/Profile.dart';
 
 class ProfileState {}
 
@@ -14,6 +14,8 @@ class UpdateProfileState extends ProfileState {
 }
 
 class UpdateProfileLoading extends ProfileState {}
+
+class ProfileUploaded extends ProfileState {}
 
 
 

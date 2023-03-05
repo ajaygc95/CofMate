@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 class InputField extends StatelessWidget {
   final String name;
   final TextEditingController controller;
+  final GlobalKey<FormState> formKey;
 
-  const InputField({Key? key, required this.name, required this.controller})
-      : super(key: key);
+  const InputField({
+    Key? key,
+    required this.name,
+    required this.controller,
+    required this.formKey,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,12 @@ class InputField extends StatelessWidget {
         fillColor: Colors.grey.shade200,
         filled: true,
       ),
-      validator: (value) => null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '$name is required';
+        }
+        return null;
+      },
     );
   }
 }

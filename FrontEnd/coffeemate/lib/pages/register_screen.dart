@@ -1,4 +1,5 @@
 import 'package:coffeemate/bloc/register/register_bloc.dart';
+import 'package:coffeemate/pages/landing_screen.dart';
 import 'package:coffeemate/pages/users_screen.dart';
 import 'package:coffeemate/widgets/custom_button.dart';
 import 'package:coffeemate/widgets/input_field.dart';
@@ -112,6 +113,9 @@ class _SubmitButton extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               BlocProvider.of<RegisterBloc>(context).add(SubmitRegisterEvent());
+              if (state is CompleteRegisterState) {
+                Navigator.pushNamed(context, LandingScreen.routename);
+              }
             },
             child: Text("Submit"),
           ),

@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+
+// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 
 import '../../repositories/auth_repository.dart';
@@ -12,16 +14,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   final AuthRepository _authRepository = AuthRepository();
-
   void _onLoginButtonPressed(
       LoginButtonPressed event, Emitter<LoginState> emit) async {
+    emit(LoginLoading());
     try {
       final token = await _authRepository.authenticate(
           username: event.username, password: event.password);
-      print("Inside bloc token received");
       await _authRepository.persistToken(token: token);
-
-      emit(LoginSuccess());
+      final profileExists =
+          await _authRepository.checkProfileExistence(token: token);
+      emit(LoginSuccess(token: token, hasProfile: profileExists));
     } catch (e) {
       emit(LoginFailure(error: e.toString()));
     }

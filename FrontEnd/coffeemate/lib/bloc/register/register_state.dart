@@ -13,4 +13,10 @@ class UpdateRegisterState extends RegisterState {
   UpdateRegisterState({required this.register});
 }
 
-class SubmittingRegisterState extends RegisterState {}
+class CompleteRegisterState extends RegisterState {}
+
+class RegisterError extends RegisterState {
+  final String errorMessage;
+
+  RegisterError({required this.errorMessage});
+}

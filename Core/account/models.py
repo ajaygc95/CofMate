@@ -27,7 +27,7 @@ class Profile(models.Model):
     images = models.ManyToManyField(Image, blank=True)
     interests = models.ManyToManyField(Interest, blank=True)
     is_completed = models.BooleanField(default=False)
-    dob = models.DateField()
+    dob = models.DateField(blank= True,null=True)
 
     def __str__(self):
         return str(self.first_name) 

@@ -70,7 +70,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
+    dob = serializers.DateField(input_formats=['%Y-%m-%d %H:%M:%S.%f'])
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'first_name', 'last_name', 'job_title', 'bio', 'images', 'interests')
+        fields = ('id', 'user', 'first_name', 'last_name', 'job_title', 'bio', 'images', 'interests', 'is_completed','dob')
