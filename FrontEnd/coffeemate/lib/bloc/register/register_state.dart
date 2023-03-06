@@ -15,6 +15,8 @@ class UpdateRegisterState extends RegisterState {
 
 class CompleteRegisterState extends RegisterState {}
 
+class SubmittingRegisterState extends RegisterState {}
+
 class RegisterError extends RegisterState {
   final String errorMessage;
 

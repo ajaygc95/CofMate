@@ -17,6 +17,11 @@ class UpdateProfileLoading extends ProfileState {}
 
 class ProfileUploaded extends ProfileState {}
 
+class ProfileFromApiState extends ProfileState {
+  final Map<String, dynamic> profile;
+
+  ProfileFromApiState({required this.profile});
+}
 
 
 // class UpdateProfileState {

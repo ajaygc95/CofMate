@@ -5,20 +5,23 @@ import 'package:coffeemate/bloc/profile/profile_event.dart';
 import 'package:coffeemate/bloc/profile/profile_state.dart';
 import 'package:coffeemate/constants/api.dart';
 import 'package:coffeemate/models/Profile.dart';
+import 'package:coffeemate/repositories/auth_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Profile profile = Profile();
+  final AuthRepository _authRepository = AuthRepository();
   ProfileBloc() : super(InitialProfileState()) {
-    on<UpdateProfileEvent>(onProfileCreate);
+    on<UpdateProfileEvent>(onProfileUpdate);
     on<AddImageEvent>(onAddImage);
     on<AddInterestsEvent>(onAddInterests);
     on<SubmitProfileEvent>(onSubmitProfile);
+    on<GetProfileFromApi>(onGetProfile);
   }
 
-  void onProfileCreate(ProfileEvent event, Emitter<ProfileState> emit) async {
+  void onProfileUpdate(ProfileEvent event, Emitter<ProfileState> emit) async {
     if (event is UpdateProfileEvent) {
       if (event.label == "name") {
         print("${event.value}");
@@ -42,16 +45,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void onAddImage(ProfileEvent event, Emitter<ProfileState> emit) {
     if (event is AddImageEvent) {
-      print(" ========================= INSIDE +++++++++++++ ");
       final File? image = event.image;
 
       if (image != null) {
         emit(UpdateProfileLoading());
-
         profile = profile.copyWith(imageUrls: [...?profile.imageUrls, image]);
       }
     }
-    print("I ma waiting for two seconds ++++++++ ");
     Future.delayed(Duration(seconds: 2));
     emit(UpdateProfileState(profile: profile));
   }
@@ -70,19 +70,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void onSubmitProfile(ProfileEvent event, Emitter<ProfileState> emit) async {
-    print("Uploading profile");
     if (event is SubmitProfileEvent) {
       emit(UpdateProfileLoading());
     }
-
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? authToken = prefs.getString('token');
-      print("Auth Token: ${authToken}");
-
       final profileJson = jsonEncode(profile);
-      print("================== ProfileJson =========");
-      print(profileJson);
       final response = await http.post(
         Uri.parse(profileApi),
         headers: {
@@ -92,8 +86,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         body: profileJson,
       );
       if (response.statusCode == 2000 || response.statusCode == 201) {
-        print("============= Response from Proifle api ============");
-        print("${response.body}");
       } else {
         print("${response.body}");
       }
@@ -102,5 +94,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     emit(ProfileUploaded());
+  }
+
+  void onGetProfile(ProfileEvent event, Emitter<ProfileState> emit) async {
+    if (event is GetProfileFromApi) {
+      final sharedPrefs = await SharedPreferences.getInstance();
+      final token = sharedPrefs.getString('token');
+      final profileJson = await _authRepository.getProfile(token!);
+      final profile = json.decode(profileJson) as Map<String, dynamic>;
+      emit(ProfileFromApiState(profile: profile));
+    }
   }
 }

@@ -21,3 +21,5 @@ class AddInterestsEvent extends ProfileEvent {
 }
 
 class SubmitProfileEvent extends ProfileEvent {}
+
+class GetProfileFromApi extends ProfileEvent {}

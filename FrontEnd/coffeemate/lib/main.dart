@@ -3,6 +3,7 @@ import 'package:coffeemate/bloc/profile/profile_bloc.dart';
 import 'package:coffeemate/bloc/register/register_bloc.dart';
 import 'package:coffeemate/config/app_router.dart';
 import 'package:coffeemate/config/custom_theme.dart';
+import 'package:coffeemate/pages/api_profile_screen.dart';
 import 'package:coffeemate/pages/landing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

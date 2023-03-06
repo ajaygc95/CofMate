@@ -1,4 +1,5 @@
 import 'package:coffeemate/bloc/login/login_bloc.dart';
+import 'package:coffeemate/pages/api_profile_screen.dart';
 import 'package:coffeemate/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -23,8 +24,9 @@ class LandingScreen extends StatelessWidget {
                 } else if (state is LoginSuccess) {
                   if (state.hasProfile) {
                     SchedulerBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(context)
-                          .pushNamed('/userscreen', arguments: state.token);
+                      Navigator.of(context).pushNamed(
+                          ApiProfileScreen.routename,
+                          arguments: state.token);
                     });
                   } else {
                     SchedulerBinding.instance.addPostFrameCallback((_) {

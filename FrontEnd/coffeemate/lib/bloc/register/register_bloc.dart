@@ -35,6 +35,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   void onSubmitRegister(
       RegisterEvent event, Emitter<RegisterState> emit) async {
     try {
+      emit(SubmittingRegisterState());
       final registerJson = jsonEncode(register); // encode register as JSON
       final response = await http.post(Uri.parse(registerApi),
           headers: {'Content-Type': 'application/json'}, body: registerJson);

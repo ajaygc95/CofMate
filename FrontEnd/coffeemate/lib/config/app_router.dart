@@ -1,3 +1,4 @@
+import 'package:coffeemate/pages/api_profile_screen.dart';
 import 'package:coffeemate/pages/landing_screen.dart';
 import 'package:coffeemate/pages/complete_profile.dart';
 import 'package:coffeemate/pages/register_screen.dart';
@@ -17,6 +18,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => RegisterScreen());
       case UserProfileScreen.routename:
         return MaterialPageRoute(builder: (context) => UserProfileScreen());
+      case ApiProfileScreen.routename:
+        return MaterialPageRoute(builder: (context) => ApiProfileScreen());
       case CompleteProfile.routename:
         return MaterialPageRoute(
             builder: (context) => CompleteProfile(

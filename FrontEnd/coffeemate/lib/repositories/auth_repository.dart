@@ -48,14 +48,32 @@ class AuthRepository {
       print(" =========== ${jsonData['user']} ============ ");
       print(" =========== ${response.body} ============ ");
       return true;
-      // if (jsonData['user'] == userId) {
-      //   print("${jsonData['user']} == $userId");
-      //   return true; // The profile exists
-      // }
     }
     print(" =============================== ");
     print(" ======= Profile Doesn't Exist ========= ");
     return false; // The profile does not exist
+  }
+
+  Future<String> getProfile(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+
+    if (userId == null) {
+      throw Exception('User ID not found in shared preferences');
+    }
+    final url = Uri.parse('$profileApi$userId/');
+
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final jsonData = json.decode(response.body);
+      return response.body;
+    }
+
+    return ''; // Return empty string if the profile does not exist
   }
 
   Future<void> persistToken({required String token}) async {
